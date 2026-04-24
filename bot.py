@@ -11,10 +11,7 @@ from telegram.ext import (
     CallbackQueryHandler, filters, ContextTypes
 )
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 BOT_TOKEN = os.environ["BOT_TOKEN"]
@@ -25,44 +22,27 @@ VOICES = {
     "en": "en-US-JennyNeural",
 }
 
-WELCOME_TEXT = (
-    "\U0001f44b Сәлем! Мен — *Айша Бот* \U0001f916\n\n"
-    "Тегін мүмкіндіктер:\n"
-    "\U0001f3b5 Кез келген мәтінді аудиоға айналдырамын\n"
-    "\U0001f5bc Сипаттама бойынша сурет жасаймын\n\n"
-    "Не жасайық?"
-)
-
 
 def main_menu():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("\U0001f3b5 Аудио жасау", callback_data="mode:audio")],
-        [InlineKeyboardButton("\U0001f5bc Сурет жасау", callback_data="mode:image")],
-        [InlineKeyboardButton("❓ Көмек", callback_data="help")],
+        [InlineKeyboardButton("🎵 Аудио жасау", callback_data="mode:audio")],
+        [InlineKeyboardButton("🖼 Сурет жасау", callback_data="mode:image")],
     ])
 
 
 def back_button():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("\U0001f519 Басты мәзір", callback_data="back")]
+        [InlineKeyboardButton("🔙 Басты мәзір", callback_data="back")]
     ])
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["mode"] = "audio"
-    await update.message.reply_text(WELCOME_TEXT, parse_mode="Markdown", reply_markup=main_menu())
-
-
-async def help_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "❓ *Пайдалану нұсқаулығы*\n\n"
-        "1️⃣ *\U0001f3b5 Аудио:* Режимді таңдап, мәтін жіберіңіз\n"
-        "   • Қазақша, орысша, ағылшынша қолдайды\n"
-        "   • Тіл автоматты анықталады\n\n"
-        "2️⃣ *\U0001f5bc Сурет:* Режимді таңдап, ағылшынша сипаттама жіберіңіз\n"
-        "   • Мысалы: `beautiful Kazakh woman, traditional dress, sunset`\n"
-        "   • 30-60 секунд күтіңіз\n\n"
-        "Барлығы *тегін!* \U0001f389",
+        "👋 Сәлем! Мен — *Айша Бот* 🤖\n\n"
+        "🎵 Мәтінді аудиоға айналдырамын\n"
+        "🖼 Сипаттама бойынша сурет жасаймын\n\n"
+        "Режимді таңдаңыз:",
         parse_mode="Markdown",
         reply_markup=main_menu()
     )
@@ -78,41 +58,28 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if mode == "audio":
             await query.edit_message_text(
-                "\U0001f3b5 *Аудио жасау режимі қосылды*\n\n"
-                "Аудиоға айналдырғыңыз келетін мәтінді жіберіңіз.\n"
-                "Қазақша, орысша немесе ағылшынша болуы мүмкін.\n\n"
-                "_Мысалы: Сәлем! Бүгін күн жылы._",
+                "🎵 *Аудио режимі*\n\nМәтінді жіберіңіз — қазақша, орысша немесе ағылшынша.",
                 parse_mode="Markdown",
                 reply_markup=back_button()
             )
         elif mode == "image":
             await query.edit_message_text(
-                "\U0001f5bc *Сурет жасау режимі қосылды*\n\n"
-                "Суреттің сипаттамасын ағылшынша жіберіңіз.\n\n"
-                "_Мысалы: beautiful Kazakh girl in traditional dress, mountains, golden hour, realistic_",
+                "🖼 *Сурет режимі*\n\nСуреттің сипаттамасын жіберіңіз.\n\n"
+                "_Мысалы: beautiful Kazakh girl, mountains, golden hour_",
                 parse_mode="Markdown",
                 reply_markup=back_button()
             )
 
-    elif query.data == "help":
-        await query.edit_message_text(
-            "❓ *Пайдалану нұсқаулығы*\n\n"
-            "1️⃣ *Аудио:* Кез келген мәтін жіберіңіз\n"
-            "   • Қазақша, орысша, ағылшынша\n"
-            "   • Бот тілді автоматты анықтайды\n\n"
-            "2️⃣ *Сурет:* Ағылшынша сипаттама жіберіңіз\n"
-            "   • Нақты сипаттама жақсы нәтиже береді\n"
-            "   • 30-60 секунд күтіңіз\n\n"
-            "Барлығы *тегін!* \U0001f389",
-            parse_mode="Markdown",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("\U0001f519 Басты мәзір", callback_data="back")]
-            ])
-        )
-
     elif query.data == "back":
         context.user_data["mode"] = "audio"
-        await query.edit_message_text(WELCOME_TEXT, parse_mode="Markdown", reply_markup=main_menu())
+        await query.edit_message_text(
+            "👋 Сәлем! Мен — *Айша Бот* 🤖\n\n"
+            "🎵 Мәтінді аудиоға айналдырамын\n"
+            "🖼 Сипаттама бойынша сурет жасаймын\n\n"
+            "Режимді таңдаңыз:",
+            parse_mode="Markdown",
+            reply_markup=main_menu()
+        )
 
 
 def detect_voice(text: str) -> str:
@@ -127,7 +94,7 @@ def detect_voice(text: str) -> str:
 
 async def generate_audio(update: Update, text: str):
     if len(text) > 2000:
-        await update.message.reply_text("⚠️ Мәтін тым ұзын (макс. 2000 символ). Қысқартып жіберіңіз.")
+        await update.message.reply_text("⚠️ Мәтін тым ұзын (макс. 2000 символ).")
         return
 
     msg = await update.message.reply_text("⏳ Аудио жасалуда...")
@@ -146,7 +113,7 @@ async def generate_audio(update: Update, text: str):
         with open(tmp_path, "rb") as f:
             await update.message.reply_audio(
                 audio=f,
-                caption=f"\U0001f3b5 *Аудио дайын!*\n_{preview}_",
+                caption=f"🎵 *Аудио дайын!*\n_{preview}_",
                 parse_mode="Markdown",
                 reply_markup=back_button()
             )
@@ -159,7 +126,7 @@ async def generate_audio(update: Update, text: str):
 
 
 async def generate_image(update: Update, prompt: str):
-    msg = await update.message.reply_text("⏳ Сурет жасалуда... (~30 секунд күтіңіз)")
+    msg = await update.message.reply_text("⏳ Сурет жасалуда... (~30 секунд)")
     tmp_path = None
     try:
         encoded = urllib.parse.quote(prompt)
@@ -181,7 +148,7 @@ async def generate_image(update: Update, prompt: str):
                     with open(tmp_path, "rb") as f:
                         await update.message.reply_photo(
                             photo=f,
-                            caption=f"\U0001f5bc *Сурет дайын!*\n_{preview}_",
+                            caption=f"🖼 *Сурет дайын!*\n_{preview}_",
                             parse_mode="Markdown",
                             reply_markup=back_button()
                         )
@@ -211,10 +178,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("help", help_cmd))
     app.add_handler(CallbackQueryHandler(callback_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    logger.info("Айша Бот іске қосылды! \U0001f680")
+    logger.info("Айша Бот іске қосылды!")
     app.run_polling(drop_pending_updates=True)
 
 
