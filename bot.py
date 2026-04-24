@@ -25,8 +25,8 @@ VOICES = {
 
 def main_menu():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("🎵 Аудио жасау", callback_data="mode:audio")],
-        [InlineKeyboardButton("🖼 Сурет жасау", callback_data="mode:image")],
+        [InlineKeyboardButton("🔊 Аудио жасау", callback_data="mode:audio")],
+        [InlineKeyboardButton("🖼 Фото жасау", callback_data="mode:image")],
     ])
 
 
@@ -39,9 +39,11 @@ def back_button():
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["mode"] = "audio"
     await update.message.reply_text(
-        "👋 Сәлем! Мен — *Айша Бот* 🤖\n\n"
-        "🎵 Мәтінді аудиоға айналдырамын\n"
-        "🖼 Сипаттама бойынша сурет жасаймын\n\n"
+        "👋 Сәлем! Мен — *Айшаның Пайдалы Боты* 🤖\n\n"
+        "🔊 *Аудио* — мәтін → дыбыс (қаз/рус/ағыл)\n"
+        "🖼 *Фото* — текст → AI сурет\n\n"
+        "Барлық қызмет тегін 🎁\n\n"
+        "✨ Айшаның Пайдалы Боты — сіздің AI серіктесіңіз\n\n"
         "Режимді таңдаңыз:",
         parse_mode="Markdown",
         reply_markup=main_menu()
@@ -58,13 +60,13 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if mode == "audio":
             await query.edit_message_text(
-                "🎵 *Аудио режимі*\n\nМәтінді жіберіңіз — қазақша, орысша немесе ағылшынша.",
+                "🔊 *Аудио режимі*\n\nМәтінді жіберіңіз — қазақша, орысша немесе ағылшынша.",
                 parse_mode="Markdown",
                 reply_markup=back_button()
             )
         elif mode == "image":
             await query.edit_message_text(
-                "🖼 *Сурет режимі*\n\nСуреттің сипаттамасын жіберіңіз.\n\n"
+                "🖼 *Фото режимі*\n\nСуреттің сипаттамасын жіберіңіз.\n\n"
                 "_Мысалы: beautiful Kazakh girl, mountains, golden hour_",
                 parse_mode="Markdown",
                 reply_markup=back_button()
@@ -73,9 +75,11 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "back":
         context.user_data["mode"] = "audio"
         await query.edit_message_text(
-            "👋 Сәлем! Мен — *Айша Бот* 🤖\n\n"
-            "🎵 Мәтінді аудиоға айналдырамын\n"
-            "🖼 Сипаттама бойынша сурет жасаймын\n\n"
+            "👋 Сәлем! Мен — *Айшаның Пайдалы Боты* 🤖\n\n"
+            "🔊 *Аудио* — мәтін → дыбыс (қаз/рус/ағыл)\n"
+            "🖼 *Фото* — текст → AI сурет\n\n"
+            "Барлық қызмет тегін 🎁\n\n"
+            "✨ Айшаның Пайдалы Боты — сіздің AI серіктесіңіз\n\n"
             "Режимді таңдаңыз:",
             parse_mode="Markdown",
             reply_markup=main_menu()
@@ -113,7 +117,7 @@ async def generate_audio(update: Update, text: str):
         with open(tmp_path, "rb") as f:
             await update.message.reply_audio(
                 audio=f,
-                caption=f"🎵 *Аудио дайын!*\n_{preview}_",
+                caption=f"🔊 *Аудио дайын!*\n_{preview}_",
                 parse_mode="Markdown",
                 reply_markup=back_button()
             )
@@ -126,7 +130,7 @@ async def generate_audio(update: Update, text: str):
 
 
 async def generate_image(update: Update, prompt: str):
-    msg = await update.message.reply_text("⏳ Сурет жасалуда... (~30 секунд)")
+    msg = await update.message.reply_text("⏳ Фото жасалуда... (~30 секунд)")
     tmp_path = None
     try:
         encoded = urllib.parse.quote(prompt)
@@ -148,12 +152,12 @@ async def generate_image(update: Update, prompt: str):
                     with open(tmp_path, "rb") as f:
                         await update.message.reply_photo(
                             photo=f,
-                            caption=f"🖼 *Сурет дайын!*\n_{preview}_",
+                            caption=f"🖼 *Фото дайын!*\n_{preview}_",
                             parse_mode="Markdown",
                             reply_markup=back_button()
                         )
                 else:
-                    await msg.edit_text("❌ Сурет жасалмады. Басқа сипаттама жіберіңіз.")
+                    await msg.edit_text("❌ Фото жасалмады. Басқа сипаттама жіберіңіз.")
 
     except asyncio.TimeoutError:
         await msg.edit_text("⏱ Уақыт асып кетті. Қайтадан көріңіз.")
